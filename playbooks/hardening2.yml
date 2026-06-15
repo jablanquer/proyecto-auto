@@ -9,34 +9,8 @@
         update_cache: yes
         upgrade: dist
 
-    - name: Instalar paquetes base
-      apt: 
-        name: "{{ packages_base }}"
-        state: present
-
-    - name: Crear usuario administrativo
-      user:
-        name: "{{ admin_user }}"
-        groups: "{{ admin_groups }}"
-        shell: "{{ admin_shell }}"
-        append: yes
-
-    - name: Crear directorio .ssh del usuario
-      file:
-        path: "home/{{ admin_user }}/.ssh"
-        state: directory
-        owner: "{{ admin_user }}"
-        group: "{{ admin_user }}"
-        mode: "0700"
-
-    - name: Copiar clave publica SSH
-      authorized_key:
-        user: "{{ admin_user }}"
-        key: "{{ ssh_key_public }}"
-        state: present
-
     - name: Instalar openssh-server
-      apt:
+      apt: 
         name: openssh-server
         state: present
 
@@ -62,6 +36,19 @@
     - name: Habilitar firewall
       ufw:
         state: enabled
+        policy: deny
+
+    - name: Mostrar informacion sistema
+      debug:
+        msg: "Servidor {{ ansible_hostname }} - {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Desplegar NOTD personalizado
+      template:
+        src: templates/motd.j2
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: "0644"
 
   handlers:
     - name: Reiniciar SSH

@@ -1,0 +1,10 @@
+===========================================
+    {{ ansible_hostname }}
+    {{ ansible_fqdn }}
+===========================================
+  SO:       {{ ansible_distribution }} {{ ansible_distribution_version }}
+  Kernel:   {{ ansible_kernel }}
+  IP:       {{ ansible_default_ipv4.address }}
+  RAM:      {{ (ansible_memtotal_mb / 1024) | round(1) }} GB
+  DiscoL:   {{ ansible_mounts[0].mount }} - {{ (ansible_mounts[0].size_total /1073741824) | round(1) }} GB
+===========================================
