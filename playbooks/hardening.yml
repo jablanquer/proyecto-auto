@@ -1,0 +1,49 @@
+---
+- name: Hardening base Servidor Ubuntu
+  hosts: linux
+  become: true
+  tasks: 
+
+    - name: Actualizar paquetes
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Instalar openssh-server
+      apt: 
+        name: openssh-server
+        state: present
+
+    - name: Deshabilitar login de root por SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?PermitRootLogin"
+        line: "PermitRootLogin no"
+      notify: Reiniciar SSH
+
+    - name: Deshabilitar autenticacion por contrasena
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?PasswordAuthentication"
+        line: "PasswordAuthentication no"
+      notify: Reiniciar SSH
+
+    - name: Instalar UFW
+      apt:
+        name: ufw
+        state: present
+
+    - name: Permitir SSH en el firewall
+      ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: Habilitar firewall
+      ufw:
+        state: enabled
+
+  handlers:
+    - name: Reiniciar SSH
+      service:
+        name: ssh
+        state: restarted
