@@ -1,7 +1,7 @@
 admin_user: ops
 admin_shell: /bin/bash
 admin_groups: sudo
-ssh_key_public: "{{ lookup('file' , '~/.ssh/id_ed25519.pub') }}"
+ssh_key_public: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
 
 packages_base:
   - htop
